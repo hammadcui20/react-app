@@ -3,3 +3,14 @@ input{
     padding: 1em;
     margin-bottom:10px;
 }
+*{
+    display: block;
+    padding: 1em;
+    margin-bottom:10px;
+}
+body
+{
+    display: block;
+    padding: 1em;
+    margin-bottom:10px;
+}
