@@ -1,49 +1,55 @@
 import './AddVideo.css';
-import { useEffect, useRef, useState} from 'react';
+import { useEffect, forwardRef, useRef, useState, useImperativeHandle } from 'react';
 import useVideoDispatch from '../hooks/VideoDispatch';
 
 const initialState = {
-    time: '1 month ago',
-    channel: 'Coder Dost',
-    verified: true,
-    title:'',
-    views:''
-  }
+  time: '1 month ago',
+  channel: 'Coder Dost',
+  verified: true,
+  title: '',
+  views: '',
+};
 
-function AddVideo({editableVideo}) {
+const AddVideo = forwardRef(function AddVideo({ editableVideo },ref) {
   const [video, setVideo] = useState(initialState);
   const dispatch = useVideoDispatch();
-  const inputRef =  useRef(null);
+  // const inputRef = useRef(null);
+  const iRef =  useRef(null);
+
+  useImperativeHandle(ref,()=>{
+    return {
+      jumpTo(){
+          iRef.current.focus()
+      }
+    }
+
+  },[])
 
   function handleSubmit(e) {
     e.preventDefault();
-    if(editableVideo){
-      dispatch({type:'UPDATE',payload:video})
-    }else{
-      dispatch({type:'ADD',payload:video})
+    if (editableVideo) {
+      dispatch({ type: 'UPDATE', payload: video });
+    } else {
+      dispatch({ type: 'ADD', payload: video });
     }
-    
-    setVideo(initialState)
 
+    setVideo(initialState);
   }
   function handleChange(e) {
-    setVideo({...video,
-        [e.target.name] : e.target.value
-    })
+    setVideo({ ...video, [e.target.name]: e.target.value });
   }
 
-  useEffect(()=>{
-    if(editableVideo){
-      setVideo(editableVideo)
+  useEffect(() => {
+    if (editableVideo) {
+      setVideo(editableVideo);
     }
-    inputRef.current.focus()
-
-  },[editableVideo])
+    // inputRef.current.focus();
+  }, [editableVideo]);
 
   return (
     <form>
       <input
-        ref={inputRef}
+        ref={iRef}
         type="text"
         name="title"
         onChange={handleChange}
@@ -57,13 +63,11 @@ function AddVideo({editableVideo}) {
         placeholder="views"
         value={video.views}
       />
-      <button
-        onClick={handleSubmit}
-      >
-        {editableVideo?'Edit':'Add'} Video
+      <button onClick={handleSubmit}>
+        {editableVideo ? 'Edit' : 'Add'} Video
       </button>
     </form>
   );
-}
+})
 
 export default AddVideo;
